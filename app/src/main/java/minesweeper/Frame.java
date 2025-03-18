@@ -8,8 +8,8 @@ import javax.swing.JPanel;
 import javax.swing.plaf.ColorUIResource;
 
 public class Frame extends JFrame {
-    private int WIDTH=460;
-    private int HEIGHT=280;
+    public final int WIDTH=460;
+    public final int HEIGHT=500;
     //private JButton[] button = new JButton[3];
     private Menu sizesMenu = new Menu();
 
