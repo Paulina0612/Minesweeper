@@ -1,19 +1,24 @@
 package minesweeper;
 
 import java.awt.Color;
+import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JFrame;
 
 public class Frame extends JFrame implements ActionListener {
-    public final int WIDTH=460;
-    public final int HEIGHT=500;
+    public static final int WIDTH=460;
+    public static final int HEIGHT=500;
+    public static final int MENU_WIDTH=140;
+    public static final int MENU_HEIGHT=10000;
+    public static final int PANEL_WIDTH=WIDTH-MENU_WIDTH;
+    public static final int PANEL_HEIGHT=10000;
     private Menu sizesMenu = new Menu();
     private BoardPanel boardPanel = new BoardPanel();
 
     public Frame(){
-        this.setSize(WIDTH, HEIGHT);
+        this.setSize(Frame.WIDTH, Frame.HEIGHT);
         this.setLayout(null);
         this.setBackground(Color.LIGHT_GRAY);
         this.setResizable(false);
@@ -22,6 +27,7 @@ public class Frame extends JFrame implements ActionListener {
         this.setVisible(true);
         
         this.add(sizesMenu);
+        this.add(boardPanel);
 
         this.sizesMenu.getSizes()[0].addActionListener(this);
         this.sizesMenu.getSizes()[1].addActionListener(this);

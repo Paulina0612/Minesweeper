@@ -9,8 +9,6 @@ import javax.swing.JPanel;
 import javax.swing.border.Border;
 
 public class Menu extends JPanel {
-    private int WIDTH=140;
-    private int HEIGHT=10000;
     private JButton[] sizes = new JButton[3];
     private JLabel label;
     private int x = 20;
@@ -19,7 +17,8 @@ public class Menu extends JPanel {
     private int componentWidth = 100;
 
     public Menu(){
-        this.setSize(WIDTH, HEIGHT);
+        this.setSize(Frame.MENU_WIDTH, Frame.MENU_HEIGHT);
+        this.setLocation(0,0);
         this.setLayout(null);
         this.setForeground(Color.BLACK);
         this.setBackground(Color.LIGHT_GRAY);
@@ -48,10 +47,6 @@ public class Menu extends JPanel {
         label = new JLabel("Choose size");
         label.setBounds(x+10,y, componentWidth,componentHeight);
         this.add(label);
-    }
-
-    public int getWidth() {
-        return WIDTH;
     }
 
     public JButton[] getSizes() {
