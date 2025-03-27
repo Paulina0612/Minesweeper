@@ -36,10 +36,10 @@ public class Frame extends JFrame implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if(e.getSource() == this.sizesMenu.getSizes()[0])
-            boardPanel.SetBoardSize(BoardSize.SMALL);
+            boardPanel.GenerateBoard(BoardSize.SMALL);
         else if(e.getSource() == this.sizesMenu.getSizes()[1])
-            boardPanel.SetBoardSize(BoardSize.MEDIUM);
+            boardPanel.GenerateBoard(BoardSize.MEDIUM);
         else if(e.getSource() == this.sizesMenu.getSizes()[2])
-            boardPanel.SetBoardSize(BoardSize.LARGE);
+            boardPanel.GenerateBoard(BoardSize.LARGE);
     }
 }

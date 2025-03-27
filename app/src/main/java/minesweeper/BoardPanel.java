@@ -7,7 +7,7 @@ import java.awt.Point;
 import javax.swing.JPanel;
 
 public class BoardPanel extends JPanel {
-    private BoardSize boardSize = null;
+    private Board board = null;
     
     public BoardPanel(){
         this.setLayout(null);
@@ -19,7 +19,7 @@ public class BoardPanel extends JPanel {
         this.setLocation(new Point(Frame.MENU_WIDTH, 0));
     }
 
-    public void SetBoardSize(BoardSize boardSize){
-        this.boardSize = boardSize;
+    public void GenerateBoard(BoardSize boardSize){
+        this.board = new Board(boardSize);
     }
 }

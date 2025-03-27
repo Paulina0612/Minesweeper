@@ -5,6 +5,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import javax.imageio.ImageIO;
 
+import minesweeper.tiles.TileType;
+
 public class ImageHandler {
     private BufferedImage img;
     private final int NUM_W=15, NUM_H=25;
@@ -24,40 +26,40 @@ public class ImageHandler {
     public int getFaceSide(){ return FACE_SIDE; }
     public int getTileSide(){ return TILE_SIDE; }
     
-    public ImageType getNumberType(String num){
+    public TileType getNumberType(String num){
         switch (num) {
-            case "0":          return ImageType.NUMBER_0;
-            case "1":          return ImageType.NUMBER_1;
-            case "2":          return ImageType.NUMBER_2;
-            case "3":          return ImageType.NUMBER_3;
-            case "4":          return ImageType.NUMBER_4;
-            case "5":          return ImageType.NUMBER_5;
-            case "6":          return ImageType.NUMBER_6;
-            case "7":          return ImageType.NUMBER_7;
-            case "8":          return ImageType.NUMBER_8;
-            case "9":          return ImageType.NUMBER_9;
-            case "-":          return ImageType.NUMBER_MINUS;
-            case "null":       return ImageType.NUMBER_NULL;
+            case "0":          return TileType.NUMBER_0;
+            case "1":          return TileType.NUMBER_1;
+            case "2":          return TileType.NUMBER_2;
+            case "3":          return TileType.NUMBER_3;
+            case "4":          return TileType.NUMBER_4;
+            case "5":          return TileType.NUMBER_5;
+            case "6":          return TileType.NUMBER_6;
+            case "7":          return TileType.NUMBER_7;
+            case "8":          return TileType.NUMBER_8;
+            case "9":          return TileType.NUMBER_9;
+            case "-":          return TileType.NUMBER_MINUS;
+            case "null":       return TileType.NUMBER_NULL;
             default:         return null;
         }
     }
 
-    public ImageType getNumberedTileType(int num){
+    public TileType getNumberedTileType(int num){
         switch (num) {
-            case 0:          return ImageType.EMPTY_TILE;
-            case 1:          return ImageType.TILE_1;
-            case 2:          return ImageType.TILE_2;
-            case 3:          return ImageType.TILE_3;
-            case 4:          return ImageType.TILE_4;
-            case 5:          return ImageType.TILE_5;
-            case 6:          return ImageType.TILE_6;
-            case 7:          return ImageType.TILE_7;
-            case 8:          return ImageType.TILE_8;
+            case 0:          return TileType.EMPTY_TILE;
+            case 1:          return TileType.TILE_1;
+            case 2:          return TileType.TILE_2;
+            case 3:          return TileType.TILE_3;
+            case 4:          return TileType.TILE_4;
+            case 5:          return TileType.TILE_5;
+            case 6:          return TileType.TILE_6;
+            case 7:          return TileType.TILE_7;
+            case 8:          return TileType.TILE_8;
             default:         return null;
         }
     }
 
-    public BufferedImage getIcon(ImageType type){
+    public BufferedImage getIcon(TileType type){
         switch (type) {
             case NUMBER_0:          return img.getSubimage(12+NUM_W*9-1*7, 145, NUM_W, NUM_H);
             case NUMBER_1:          return img.getSubimage(13, 145, NUM_W, NUM_H);

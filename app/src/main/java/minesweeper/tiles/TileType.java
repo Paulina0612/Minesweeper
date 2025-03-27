@@ -1,6 +1,6 @@
-package minesweeper.images;
+package minesweeper.tiles;
 
-public enum ImageType{
+public enum TileType{
     NUMBER_0, 
     NUMBER_1,
     NUMBER_2, 
