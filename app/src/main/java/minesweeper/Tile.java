@@ -1,5 +1,0 @@
-package minesweeper;
-
-class Tile {
-    
-}

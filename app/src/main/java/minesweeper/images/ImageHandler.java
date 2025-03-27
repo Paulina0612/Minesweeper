@@ -23,8 +23,41 @@ public class ImageHandler {
     public int getNumberedIconHeight(){ return NUM_H; }
     public int getFaceSide(){ return FACE_SIDE; }
     public int getTileSide(){ return TILE_SIDE; }
+    
+    public ImageType getNumberType(String num){
+        switch (num) {
+            case "0":          return ImageType.NUMBER_0;
+            case "1":          return ImageType.NUMBER_1;
+            case "2":          return ImageType.NUMBER_2;
+            case "3":          return ImageType.NUMBER_3;
+            case "4":          return ImageType.NUMBER_4;
+            case "5":          return ImageType.NUMBER_5;
+            case "6":          return ImageType.NUMBER_6;
+            case "7":          return ImageType.NUMBER_7;
+            case "8":          return ImageType.NUMBER_8;
+            case "9":          return ImageType.NUMBER_9;
+            case "-":          return ImageType.NUMBER_MINUS;
+            case "null":       return ImageType.NUMBER_NULL;
+            default:         return null;
+        }
+    }
 
-    public BufferedImage getNumberedIcon(ImageType type){
+    public ImageType getNumberedTileType(int num){
+        switch (num) {
+            case 0:          return ImageType.EMPTY_TILE;
+            case 1:          return ImageType.TILE_1;
+            case 2:          return ImageType.TILE_2;
+            case 3:          return ImageType.TILE_3;
+            case 4:          return ImageType.TILE_4;
+            case 5:          return ImageType.TILE_5;
+            case 6:          return ImageType.TILE_6;
+            case 7:          return ImageType.TILE_7;
+            case 8:          return ImageType.TILE_8;
+            default:         return null;
+        }
+    }
+
+    public BufferedImage getIcon(ImageType type){
         switch (type) {
             case NUMBER_0:          return img.getSubimage(12+NUM_W*9-1*7, 145, NUM_W, NUM_H);
             case NUMBER_1:          return img.getSubimage(13, 145, NUM_W, NUM_H);
