@@ -43,8 +43,8 @@ public class Board {
         
         DisplayMap();
 
-        for(int i=1; i<size.getRows()-2; i++){
-            for(int j=1; j<size.getColumns()-2; j++){
+        for(int i=0; i<size.getRows(); i++){
+            for(int j=0; j<size.getColumns(); j++){
                 PutTileNumber(j, i);
             }
         }
@@ -59,6 +59,9 @@ public class Board {
             for(int a=-1; a<2; a++){
                 for(int b=-1; b<2; b++){
                     if(a==0 && b==0) continue;
+                    else if(x+a<0 || y+b<0 || 
+                        x+a>size.getColumns()-1 || y+b>size.getRows()-1)
+                            continue;
                     else if (tiles[x+a][y+b]==TileType.UNTRIGGERED_MINE)
                         counter++;
                 }
