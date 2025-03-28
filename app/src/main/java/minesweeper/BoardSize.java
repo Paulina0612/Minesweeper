@@ -3,7 +3,7 @@ package minesweeper;
 public enum BoardSize {
     SMALL(9, 9, 10),
     MEDIUM(16, 16, 40),
-    LARGE(16, 30, 99);
+    LARGE(22, 22, 99);
 
     private int columns;
     private int rows;

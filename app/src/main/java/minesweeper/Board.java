@@ -2,6 +2,7 @@ package minesweeper;
 
 import java.util.Random;
 
+import minesweeper.images.ImageHandler;
 import minesweeper.tiles.TileType;
 
 public class Board {
@@ -39,16 +40,31 @@ public class Board {
                 tiles[y][x] = TileType.UNTRIGGERED_MINE;
             else i--;
         }
+        
+        DisplayMap();
 
-        for(int i=0; i<size.getRows(); i++){
-            for(int j=0; j<size.getColumns(); j++){
+        for(int i=1; i<size.getRows()-2; i++){
+            for(int j=1; j<size.getColumns()-2; j++){
                 PutTileNumber(j, i);
             }
         }
     }
 
     private void PutTileNumber(int x, int y){
-        //TODO: uzupelnic
+        if(tiles[x][y] == TileType.UNTRIGGERED_MINE)
+            return;
+                
+            int counter=0;
+
+            for(int a=-1; a<2; a++){
+                for(int b=-1; b<2; b++){
+                    if(a==0 && b==0) continue;
+                    else if (tiles[x+a][y+b]==TileType.UNTRIGGERED_MINE)
+                        counter++;
+                }
+            }
+
+        tiles[x][y] = new ImageHandler().getNumberedTileType(counter);
     }
 
     public TileType[][] getTileBoard(){
