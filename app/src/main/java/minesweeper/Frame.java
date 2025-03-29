@@ -7,8 +7,8 @@ import java.awt.event.ActionListener;
 import javax.swing.JFrame;
 
 public class Frame extends JFrame implements ActionListener {
-    public static final int WIDTH=460;
-    public static final int HEIGHT=500;
+    public static final int WIDTH=700;
+    public static final int HEIGHT=600;
     public static final int MENU_WIDTH=140;
     public static final int MENU_HEIGHT=10000;
     public static final int PANEL_WIDTH=WIDTH-MENU_WIDTH;

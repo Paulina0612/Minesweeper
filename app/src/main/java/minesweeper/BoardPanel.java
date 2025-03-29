@@ -14,6 +14,7 @@ public class BoardPanel extends JPanel {
     private List<RegularTile> tiles = new ArrayList<>();
     private List<JLabel> icons = new ArrayList<>();
     private ImageHandler imageHandler = new ImageHandler();
+    private int xOffset, yOffset;
     
     public BoardPanel(){
         this.setLayout(null);
@@ -25,6 +26,9 @@ public class BoardPanel extends JPanel {
 
     public void GenerateBoard(BoardSize boardSize){
         this.board = new Board(boardSize);
+
+        xOffset=(Frame.PANEL_WIDTH-boardSize.getColumns()*imageHandler.getTileSide())/2;
+        yOffset=100;
 
         DrawBoard(boardSize);
 
@@ -51,7 +55,7 @@ public class BoardPanel extends JPanel {
                 JLabel icon = new JLabel(new ImageIcon(
                     imageHandler.getIcon(tiles.get(i*boardSize.getColumns()+j).GetType()))); 
             
-                icon.setBounds(i*18, j*18, 18, 18);
+                icon.setBounds(xOffset+i*18, yOffset+j*18, 18, 18);
                 icons.add(icon);
                 this.add(icons.get(i*boardSize.getColumns()+j));
             }
