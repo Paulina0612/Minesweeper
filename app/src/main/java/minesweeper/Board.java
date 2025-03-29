@@ -3,7 +3,6 @@ package minesweeper;
 import java.util.Random;
 
 import minesweeper.images.ImageHandler;
-import minesweeper.tiles.TileType;
 
 public class Board {
     private BoardSize size = null;

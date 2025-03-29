@@ -5,7 +5,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import javax.imageio.ImageIO;
 
-import minesweeper.tiles.TileType;
+import minesweeper.TileType;
 
 public class ImageHandler {
     private BufferedImage img;

@@ -1,4 +1,4 @@
-package minesweeper.tiles;
+package minesweeper;
 
 public enum TileType{
     NUMBER_0, 

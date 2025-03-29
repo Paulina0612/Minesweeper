@@ -1,4 +1,4 @@
-package minesweeper.tiles;
+package minesweeper;
 
 import javax.swing.ImageIcon;
 
