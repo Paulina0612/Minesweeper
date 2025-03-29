@@ -33,6 +33,8 @@ public class BoardPanel extends JPanel {
     public void GenerateBoard(BoardSize boardSize){
         this.board = new Board(boardSize);
         tiles.clear();
+        //icons.clear();
+        if(icons.size()>0)this.remove(icons.get(0));
         icons.clear();
         DrawBoard(boardSize);
         //System.out.println(icons.get(0).getX());
