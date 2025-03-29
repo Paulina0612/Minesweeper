@@ -13,6 +13,7 @@ public class BoardPanel extends JPanel {
     private Board board = null;
     private List<RegularTile> tiles = new ArrayList<>();
     private List<JLabel> icons = new ArrayList<>();
+    private List<TileCover> tileCovers = new ArrayList<>();
     private ImageHandler imageHandler = new ImageHandler();
     private int xOffset, yOffset;
     
@@ -38,10 +39,10 @@ public class BoardPanel extends JPanel {
 
     private void DrawBoard(BoardSize boardSize){
         if(icons.size()>0){
-            for (JLabel icon : icons) 
-                this.remove(icon);
+            this.removeAll();
             icons.clear();
             tiles.clear();
+            tileCovers.clear();
         }
         
         for(int i=0; i<boardSize.getRows(); i++){
@@ -57,7 +58,17 @@ public class BoardPanel extends JPanel {
             
                 icon.setBounds(xOffset+i*18, yOffset+j*18, 18, 18);
                 icons.add(icon);
-                this.add(icons.get(i*boardSize.getColumns()+j));
+                //this.add(icons.get(i*boardSize.getColumns()+j));
+            }
+        }
+
+        for(int i=0; i<boardSize.getColumns(); i++){
+            for(int j=0; j<boardSize.getRows(); j++){
+                tileCovers.add(new TileCover(j, i));
+                tileCovers.get(i*boardSize.getColumns()+j).setBounds(xOffset+i*18, yOffset+j*18, 18, 18);
+                tileCovers.get(i*boardSize.getColumns()+j).setIcon(new ImageIcon(
+                    imageHandler.getIcon(TileType.COVERED_TILE)));
+                this.add(tileCovers.get(i*boardSize.getColumns()+j));
             }
         }
     }

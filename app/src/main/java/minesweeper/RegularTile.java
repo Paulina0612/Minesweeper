@@ -1,6 +1,8 @@
 package minesweeper;
 
-public class RegularTile extends Img {
+import javax.swing.ImageIcon;
+
+public class RegularTile extends ImageIcon {
     protected int x, y;
     private TileType type;
 
