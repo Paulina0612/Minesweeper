@@ -4,6 +4,7 @@ import java.awt.image.BufferedImage;
 import java.io.FileInputStream;
 import java.io.IOException;
 import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 
 import minesweeper.TileType;
 
@@ -44,7 +45,7 @@ public class ImageHandler {
         }
     }
 
-    public TileType getNumberedTileType(int num){
+    public static TileType getNumberedTileType(int num){
         switch (num) {
             case 0:          return TileType.EMPTY_TILE;
             case 1:          return TileType.TILE_1;

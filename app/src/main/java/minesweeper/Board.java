@@ -66,7 +66,7 @@ public class Board {
                 }
             }
 
-        tiles[x][y] = new ImageHandler().getNumberedTileType(counter);
+        tiles[x][y] = ImageHandler.getNumberedTileType(counter);
     }
 
     public TileType[][] getTileBoard(){

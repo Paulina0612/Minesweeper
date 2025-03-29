@@ -2,14 +2,17 @@ package minesweeper;
 
 import javax.swing.ImageIcon;
 
-import minesweeper.images.MineType;
+//import minesweeper.images.MineType;
 
-public class Mine extends ImageIcon {
+public class Mine extends Img {
     //protected ImageIcon untriggeredMine, triggeredMine, mineError;
-    private MineType type;
+    protected int x, y;
+    //private MineType type;
 
-    public Mine(MineType type){
-        this.type = type;
+    //public Mine(MineType type, int x, int y){
+        //this.type = type;
+        //this.x = x;
+        //this.y = y;
         //switch (type) {
         //    case UNTRIGGERED_MINE: untriggeredMine = new ImageIcon(
         //        imageHandler.getIcon(TileType.UNTRIGGERED_MINE)); break;
@@ -19,9 +22,9 @@ public class Mine extends ImageIcon {
         //        imageHandler.getIcon(TileType.MINE_ERROR)); break;
         //    default: break;
         //}
-    }
+    //}
 
-    public MineType GetMineType(){
-        return type;
-    } 
+    //public MineType GetType(){
+     //   return type;
+    //} 
 }
