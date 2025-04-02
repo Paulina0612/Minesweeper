@@ -2,6 +2,10 @@ package minesweeper;
 
 import java.awt.Color;
 import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.ImageIcon;
@@ -9,7 +13,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import minesweeper.images.ImageHandler;
 
-public class BoardPanel extends JPanel {
+public class BoardPanel extends JPanel implements ActionListener, MouseListener {
     private Board board = null;
     private List<RegularTile> tiles = new ArrayList<>();
     private List<JLabel> icons = new ArrayList<>();
@@ -57,19 +61,69 @@ public class BoardPanel extends JPanel {
                     imageHandler.getIcon(tiles.get(i*boardSize.getColumns()+j).GetType()))); 
             
                 icon.setBounds(xOffset+i*18, yOffset+j*18, 18, 18);
+                icon.addMouseListener(this);
                 icons.add(icon);
                 //this.add(icons.get(i*boardSize.getColumns()+j));
             }
         }
 
+        ImageIcon icon = new ImageIcon(imageHandler.getIcon(TileType.COVERED_TILE));
         for(int i=0; i<boardSize.getColumns(); i++){
             for(int j=0; j<boardSize.getRows(); j++){
                 tileCovers.add(new TileCover(j, i));
                 tileCovers.get(i*boardSize.getColumns()+j).setBounds(xOffset+i*18, yOffset+j*18, 18, 18);
-                tileCovers.get(i*boardSize.getColumns()+j).setIcon(new ImageIcon(
-                    imageHandler.getIcon(TileType.COVERED_TILE)));
+                tileCovers.get(i*boardSize.getColumns()+j).setIcon(icon);
+                tileCovers.get(i*boardSize.getColumns()+j).addActionListener(this);
                 this.add(tileCovers.get(i*boardSize.getColumns()+j));
             }
         }
     }
+
+    //TODO: Optimize two methods
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        Object source = e.getSource();
+        int index = -1;
+
+        // Find the index of the clicked TileCover
+        for (int i = 0; i < tileCovers.size(); i++) {
+            if (tileCovers.get(i) == source) {
+                index = i;
+                break;
+            }
+        }
+
+        this.remove(tileCovers.get(index));
+        this.add(icons.get(index));
+        this.repaint();
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        Object source = e.getSource();
+        int index = -1;
+
+        // Find the index of the clicked TileCover
+        for (int i = 0; i < icons.size(); i++) {
+            if (icons.get(i) == source) {
+                index = i;
+                break;
+            }
+        }
+
+        System.out.println(index);
+        this.repaint();
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {}
+
+    @Override
+    public void mousePressed(MouseEvent e) {}
+
+    @Override
+    public void mouseEntered(MouseEvent e) {}
+
+    @Override
+    public void mouseExited(MouseEvent e) {}
 }
