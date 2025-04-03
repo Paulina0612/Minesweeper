@@ -63,7 +63,6 @@ public class BoardPanel extends JPanel implements ActionListener, MouseListener 
                 icon.setBounds(xOffset+i*18, yOffset+j*18, 18, 18);
                 icon.addMouseListener(this);
                 icons.add(icon);
-                //this.add(icons.get(i*boardSize.getColumns()+j));
             }
         }
 
@@ -79,19 +78,25 @@ public class BoardPanel extends JPanel implements ActionListener, MouseListener 
         }
     }
 
-    //TODO: Optimize two methods
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        Object source = e.getSource();
+    private int GetIndexOfComponent(List<?> components,Object source){
         int index = -1;
 
-        // Find the index of the clicked TileCover
-        for (int i = 0; i < tileCovers.size(); i++) {
-            if (tileCovers.get(i) == source) {
+        // Find the index of the clicked Component
+        for (int i = 0; i < components.size(); i++) {
+            if (components.get(i) == source) {
                 index = i;
                 break;
             }
         }
+
+        return index;
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        Object source = e.getSource();
+
+        int index = GetIndexOfComponent(tileCovers, source);
 
         this.remove(tileCovers.get(index));
         this.add(icons.get(index));
@@ -101,15 +106,8 @@ public class BoardPanel extends JPanel implements ActionListener, MouseListener 
     @Override
     public void mouseClicked(MouseEvent e) {
         Object source = e.getSource();
-        int index = -1;
 
-        // Find the index of the clicked TileCover
-        for (int i = 0; i < icons.size(); i++) {
-            if (icons.get(i) == source) {
-                index = i;
-                break;
-            }
-        }
+        int index = GetIndexOfComponent(icons, source);
 
         System.out.println(index);
         this.repaint();
