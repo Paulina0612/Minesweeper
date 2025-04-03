@@ -11,6 +11,8 @@ import java.util.List;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
+
 import minesweeper.images.ImageHandler;
 
 public class BoardPanel extends JPanel implements ActionListener, MouseListener {
@@ -20,6 +22,7 @@ public class BoardPanel extends JPanel implements ActionListener, MouseListener 
     private List<TileCover> tileCovers = new ArrayList<>();
     private ImageHandler imageHandler = new ImageHandler();
     private int xOffset, yOffset;
+    private boolean ifGameOn;
     
     public BoardPanel(){
         this.setLayout(null);
@@ -31,6 +34,8 @@ public class BoardPanel extends JPanel implements ActionListener, MouseListener 
 
     public void GenerateBoard(BoardSize boardSize){
         this.board = new Board(boardSize);
+
+        ifGameOn = true;
 
         xOffset=(Frame.PANEL_WIDTH-boardSize.getColumns()*imageHandler.getTileSide())/2;
         yOffset=100;
@@ -73,9 +78,15 @@ public class BoardPanel extends JPanel implements ActionListener, MouseListener 
                 tileCovers.get(i*boardSize.getColumns()+j).setBounds(xOffset+i*18, yOffset+j*18, 18, 18);
                 tileCovers.get(i*boardSize.getColumns()+j).setIcon(icon);
                 tileCovers.get(i*boardSize.getColumns()+j).addActionListener(this);
+                tileCovers.get(i*boardSize.getColumns()+j).addMouseListener(this);
                 this.add(tileCovers.get(i*boardSize.getColumns()+j));
             }
         }
+    }
+
+    private void MineClicked(){
+        ifGameOn = false;
+        System.out.println("You lost");
     }
 
     private int GetIndexOfComponent(List<?> components,Object source){
@@ -96,21 +107,51 @@ public class BoardPanel extends JPanel implements ActionListener, MouseListener 
     public void actionPerformed(ActionEvent e) {
         Object source = e.getSource();
 
-        int index = GetIndexOfComponent(tileCovers, source);
+        if(tileCovers.contains(source)){
+            int index = GetIndexOfComponent(tileCovers, source);
 
-        this.remove(tileCovers.get(index));
-        this.add(icons.get(index));
-        this.repaint();
+            if(ifGameOn){
+                if(!tileCovers.get(index).IsFlag()){
+                    this.remove(tileCovers.get(index));
+                    this.add(icons.get(index));
+                    this.repaint();
+
+
+                // Action 
+                switch (tiles.get(index).GetType()) {
+                    case UNTRIGGERED_MINE: MineClicked(); break;
+                    default: break;
+                }
+            }
+            }
+        }
     }
 
     @Override
     public void mouseClicked(MouseEvent e) {
         Object source = e.getSource();
 
-        int index = GetIndexOfComponent(icons, source);
+        if (icons.contains(source)){
+            int index = GetIndexOfComponent(icons, source);
 
-        System.out.println(index);
-        this.repaint();
+            System.out.println(index);
+            this.repaint();
+        }
+        else if(tileCovers.contains(source) && SwingUtilities.isRightMouseButton(e)){
+            int index = GetIndexOfComponent(tileCovers, source);
+            System.out.println(index);
+            if(!tileCovers.get(index).IsFlag()){
+                tileCovers.get(index).PutFlag();
+                tileCovers.get(index).setIcon(new ImageIcon(imageHandler.getIcon(TileType.FLAG)));;
+            }
+            else{
+                tileCovers.get(index).RemoveFlag();
+                tileCovers.get(index).setIcon(new ImageIcon(imageHandler.getIcon(TileType.COVERED_TILE)));;
+            
+            }
+            
+            this.repaint();
+        }
     }
 
     @Override
@@ -125,3 +166,13 @@ public class BoardPanel extends JPanel implements ActionListener, MouseListener 
     @Override
     public void mouseExited(MouseEvent e) {}
 }
+
+
+
+/*
+ * TODO: Displaying all mines when fail
+ * TODO: Inform when win
+ * TODO: Move mine if first click was a mine
+ * TODO: Show more tiles when click 
+ * TODO: Finish interface
+ */
