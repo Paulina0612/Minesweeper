@@ -1,6 +1,7 @@
 package minesweeper;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -179,6 +180,16 @@ public class BoardPanel extends JPanel implements ActionListener, MouseListener 
         this.repaint();
     }
 
+    private void CheckIfWin(){
+        System.out.println(GetAmountOfTileCovers() +" "+ board.GetSize().getAmountOfMines());
+
+        // Check if all mines are detected
+        if(GetAmountOfTileCovers() == board.GetSize().getAmountOfMines()){
+            ifGameOn = false;
+            System.out.println("You won!");
+        }
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         Object source = e.getSource();
@@ -211,9 +222,21 @@ public class BoardPanel extends JPanel implements ActionListener, MouseListener 
                     this.remove(tileCovers.get(index));
                     this.add(icons.get(index));
                     this.repaint();
+
+                    CheckIfWin();
                 }
             }
         }
+    }
+
+    private int GetAmountOfTileCovers(){
+        int amount = 0;
+        for(Component component : this.getComponents()){
+            if(tileCovers.contains(component)){
+                amount++;
+            }
+        }
+        return amount;
     }
 
     @Override
@@ -223,15 +246,17 @@ public class BoardPanel extends JPanel implements ActionListener, MouseListener 
         if (icons.contains(source)){
             int index = GetIndexOfComponent(icons, source);
 
-            System.out.println(index);
+            //System.out.println(index);
             if(tiles.get(index).GetType() != TileType.UNTRIGGERED_MINE){
                 ShowNeighbors(index);
             }
             this.repaint();
+
+            CheckIfWin();
         }
         else if(tileCovers.contains(source) && SwingUtilities.isRightMouseButton(e)){
             int index = GetIndexOfComponent(tileCovers, source);
-            System.out.println(index);
+            //System.out.println(index);
             if(!tileCovers.get(index).IsFlag()){
                 tileCovers.get(index).PutFlag();
                 tileCovers.get(index).setIcon(new ImageIcon(imageHandler.getIcon(TileType.FLAG)));;
