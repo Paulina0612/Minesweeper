@@ -23,6 +23,7 @@ public class BoardPanel extends JPanel implements ActionListener, MouseListener 
     private ImageHandler imageHandler = new ImageHandler();
     private int xOffset, yOffset;
     private boolean ifGameOn;
+    private int clicksCounter=0;
     
     public BoardPanel(){
         this.setLayout(null);
@@ -36,6 +37,7 @@ public class BoardPanel extends JPanel implements ActionListener, MouseListener 
         this.board = new Board(boardSize);
 
         ifGameOn = true;
+        clicksCounter = 0;
 
         xOffset=(Frame.PANEL_WIDTH-boardSize.getColumns()*imageHandler.getTileSide())/2;
         yOffset=100;
@@ -47,29 +49,9 @@ public class BoardPanel extends JPanel implements ActionListener, MouseListener 
     }
 
     private void DrawBoard(BoardSize boardSize){
-        if(icons.size()>0){
-            this.removeAll();
-            icons.clear();
-            tiles.clear();
-            tileCovers.clear();
-        }
-        
-        for(int i=0; i<boardSize.getRows(); i++){
-            for(int j=0; j<boardSize.getColumns(); j++){
-                tiles.add(new RegularTile(board.getTileBoard()[j][i], j, i));
-            }
-        }
-
-        for(int i=0; i<boardSize.getRows(); i++){
-            for(int j=0; j<boardSize.getColumns(); j++){
-                JLabel icon = new JLabel(new ImageIcon(
-                    imageHandler.getIcon(tiles.get(i*boardSize.getColumns()+j).GetType()))); 
-            
-                icon.setBounds(xOffset+i*18, yOffset+j*18, 18, 18);
-                icon.addMouseListener(this);
-                icons.add(icon);
-            }
-        }
+        this.removeAll();
+        tileCovers.clear();
+        GenerateIcons();
 
         ImageIcon icon = new ImageIcon(imageHandler.getIcon(TileType.COVERED_TILE));
         for(int i=0; i<boardSize.getColumns(); i++){
@@ -103,6 +85,29 @@ public class BoardPanel extends JPanel implements ActionListener, MouseListener 
         return index;
     }
 
+    private void GenerateIcons(){
+        BoardSize boardSize = board.GetSize();
+
+        tiles.clear();
+
+        for(int i=0; i<boardSize.getRows(); i++){
+            for(int j=0; j<boardSize.getColumns(); j++){
+                tiles.add(new RegularTile(board.getTileBoard()[j][i], j, i));
+            }
+        }
+        icons.clear();
+        for(int i=0; i<boardSize.getRows(); i++){
+            for(int j=0; j<boardSize.getColumns(); j++){
+                JLabel icon = new JLabel(new ImageIcon(
+                    imageHandler.getIcon(tiles.get(i*boardSize.getColumns()+j).GetType()))); 
+            
+                icon.setBounds(xOffset+i*18, yOffset+j*18, 18, 18);
+                icon.addMouseListener(this);
+                icons.add(icon);
+            }
+        }
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         Object source = e.getSource();
@@ -110,19 +115,29 @@ public class BoardPanel extends JPanel implements ActionListener, MouseListener 
         if(tileCovers.contains(source)){
             int index = GetIndexOfComponent(tileCovers, source);
 
+            board.GetPosition(index);
+
             if(ifGameOn){
                 if(!tileCovers.get(index).IsFlag()){
+                    // First click
+                    clicksCounter++;
+                    
+                    // Action 
+                    switch (tiles.get(index).GetType()) {
+                        case UNTRIGGERED_MINE:
+                            if(clicksCounter==1) {
+                                board.MoveMine(index);
+                                GenerateIcons();
+                            }
+                            else MineClicked(); 
+                            break;
+                        default: break;
+                    }
+
                     this.remove(tileCovers.get(index));
                     this.add(icons.get(index));
                     this.repaint();
-
-
-                // Action 
-                switch (tiles.get(index).GetType()) {
-                    case UNTRIGGERED_MINE: MineClicked(); break;
-                    default: break;
                 }
-            }
             }
         }
     }
@@ -172,7 +187,6 @@ public class BoardPanel extends JPanel implements ActionListener, MouseListener 
 /*
  * TODO: Displaying all mines when fail
  * TODO: Inform when win
- * TODO: Move mine if first click was a mine
  * TODO: Show more tiles when click 
  * TODO: Finish interface
  */

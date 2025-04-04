@@ -1,7 +1,6 @@
 package minesweeper;
 
 import java.util.Random;
-
 import minesweeper.images.ImageHandler;
 
 public class Board {
@@ -77,6 +76,47 @@ public class Board {
         return coverBoard;
     }
 
+    public Position GetPosition(int index){
+        // Find position 
+        int x=0, y=0;
+        for(int i=0;;i++){
+            if(index-(i+1)*size.getColumns() < 0) {
+                x=i;
+                y=index-(x*size.getColumns());
+                break;
+            }
+        }
+        //System.out.println(x+" "+y);
+        return new Position(x, y);
+    }
+
+    public void MoveMine(int index){
+        Position minePosition = GetPosition(index);
+
+        tiles[minePosition.y][minePosition.x] = TileType.EMPTY_TILE;
+
+        // Generate new mine 
+        while (true){
+            int x = rand.nextInt(size.getColumns());
+            int y = rand.nextInt(size.getRows());
+
+            if(tiles[y][x] != TileType.UNTRIGGERED_MINE) {
+                tiles[y][x] = TileType.UNTRIGGERED_MINE;
+                break;
+            }
+            else continue;
+        }
+
+        for(int i=0; i<size.getRows(); i++){
+            for(int j=0; j<size.getColumns(); j++){
+                PutTileNumber(j, i);
+            }
+        }
+        System.out.println(minePosition.x+" "+minePosition.y);
+
+        DisplayMap();
+    }
+
     //TODO: do usunieicia
     private void DisplayCoveredMap(){
         for(int i=0; i<size.getRows(); i++){
@@ -115,5 +155,9 @@ public class Board {
             System.out.println();
         }
         System.out.println();
+    }
+
+    public BoardSize GetSize(){
+        return size;
     }
 }
