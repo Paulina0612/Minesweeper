@@ -108,6 +108,77 @@ public class BoardPanel extends JPanel implements ActionListener, MouseListener 
         }
     }
 
+    private void ShowNeighbors(int index){
+        int x = board.GetPosition(index).x;
+        int y = board.GetPosition(index).y;
+
+        if(tiles.get(index).GetType() == TileType.EMPTY_TILE){
+            for(int i=0; i<3; i++){
+                for(int j=0; j<3; j++){
+                    if(i==1 && j==1) continue;
+                    else if(x+i-1<0 || y+j-1<0 || 
+                        x+i-1>board.GetSize().getColumns()-1 || 
+                        y+j-1>board.GetSize().getRows()-1)
+                            continue;
+                    else if(tileCovers.get((x+i-1)*board.GetSize()
+                        .getColumns()+(y+j-1)).IsFlag())
+                            continue;
+                    else if(tiles.get((x+i-1)*board.GetSize()
+                        .getColumns()+(y+j-1)).GetType() != 
+                        TileType.UNTRIGGERED_MINE
+                        && !tileCovers.get((x+i-1)*board.GetSize()
+                        .getColumns()+(y+j-1)).IsFlag() ){
+                            this.remove(tileCovers.get((x+i-1)*board
+                                .GetSize().getColumns()+(y+j-1)));
+                            this.add(icons.get((x+i-1)*board.GetSize()
+                                .getColumns()+(y+j-1)));
+                    }
+                }
+            }
+        }
+        else if (ImageHandler.isNumberedTile(tiles.get(index))) {
+            int amountOfMines = 
+                ImageHandler.getNumber(tiles.get(index).GetType());
+            int counter=0; 
+
+            for(int i=0; i<3; i++){
+                for(int j=0; j<3; j++){
+                    if(i==1 && j==1) continue;
+                    else if(x+i-1<0 || y+j-1<0 || 
+                        x+i-1>board.GetSize().getColumns()-1 || 
+                        y+j-1>board.GetSize().getRows()-1)
+                            continue;
+                    else if(tileCovers.get((x+i-1)*board.GetSize()
+                        .getColumns()+(y+j-1)).IsFlag())
+                            counter++;
+                }
+            }
+
+            if(counter==amountOfMines){
+                for(int i=0; i<3; i++){
+                    for(int j=0; j<3; j++){
+                        if(i==1 && j==1) continue;
+                        else if(x+i-1<0 || y+j-1<0 || 
+                            x+i-1>board.GetSize().getColumns()-1 || 
+                            y+j-1>board.GetSize().getRows()-1)
+                                continue;
+                        else if(tiles.get((x+i-1)*board.GetSize()
+                            .getColumns()+(y+j-1)).GetType() != 
+                            TileType.UNTRIGGERED_MINE
+                            && !tileCovers.get((x+i-1)*board.GetSize()
+                            .getColumns()+(y+j-1)).IsFlag() ){
+                                this.remove(tileCovers.get((x+i-1)*board
+                                    .GetSize().getColumns()+(y+j-1)));
+                                this.add(icons.get((x+i-1)*board.GetSize()
+                                    .getColumns()+(y+j-1)));
+                        }
+                    }
+                }
+            }
+        }
+        this.repaint();
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         Object source = e.getSource();
@@ -131,6 +202,9 @@ public class BoardPanel extends JPanel implements ActionListener, MouseListener 
                             }
                             else MineClicked(); 
                             break;
+                        case EMPTY_TILE:
+                            ShowNeighbors(index);
+                            break;
                         default: break;
                     }
 
@@ -150,6 +224,9 @@ public class BoardPanel extends JPanel implements ActionListener, MouseListener 
             int index = GetIndexOfComponent(icons, source);
 
             System.out.println(index);
+            if(tiles.get(index).GetType() != TileType.UNTRIGGERED_MINE){
+                ShowNeighbors(index);
+            }
             this.repaint();
         }
         else if(tileCovers.contains(source) && SwingUtilities.isRightMouseButton(e)){
@@ -187,6 +264,5 @@ public class BoardPanel extends JPanel implements ActionListener, MouseListener 
 /*
  * TODO: Displaying all mines when fail
  * TODO: Inform when win
- * TODO: Show more tiles when click 
  * TODO: Finish interface
  */

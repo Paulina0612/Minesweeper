@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import javax.imageio.ImageIO;
 
+import minesweeper.RegularTile;
 import minesweeper.TileType;
 
 public class ImageHandler {
@@ -44,6 +45,15 @@ public class ImageHandler {
         }
     }
 
+    public static boolean isNumberedTile(RegularTile tile){
+        switch (tile.GetType()) {
+            case TILE_1: case TILE_2: case TILE_3: case TILE_4: 
+            case TILE_5: case TILE_6: case TILE_7: case TILE_8:
+            return true; 
+            default: return false;
+        }
+    }
+
     public static TileType getNumberedTileType(int num){
         switch (num) {
             case 0:          return TileType.EMPTY_TILE;
@@ -56,6 +66,20 @@ public class ImageHandler {
             case 7:          return TileType.TILE_7;
             case 8:          return TileType.TILE_8;
             default:         return null;
+        }
+    }
+
+    public static int getNumber(TileType type){
+        switch (type) {
+            case TILE_1:     return 1;
+            case TILE_2:     return 2;
+            case TILE_3:     return 3;
+            case TILE_4:     return 4;
+            case TILE_5:     return 5;
+            case TILE_6:     return 6;
+            case TILE_7:     return 7;
+            case TILE_8:     return 8;
+            default:         return -1;
         }
     }
 
