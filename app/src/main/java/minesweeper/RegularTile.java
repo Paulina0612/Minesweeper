@@ -15,4 +15,8 @@ public class RegularTile extends ImageIcon {
     public TileType GetType(){
         return type;
     }
+
+    public void SetType(TileType type){
+        this.type = type;
+    }
 }

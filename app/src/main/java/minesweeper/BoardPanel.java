@@ -67,8 +67,40 @@ public class BoardPanel extends JPanel implements ActionListener, MouseListener 
         }
     }
 
-    private void MineClicked(){
+    private void MineClicked(int mineIndex){
         ifGameOn = false;
+
+        this.remove(tileCovers.get(mineIndex));
+        this.add(icons.get(mineIndex));
+        tiles.get(mineIndex).SetType(TileType.TRIGGERED_MINE);
+        icons.get(mineIndex).setIcon(new ImageIcon(imageHandler.getIcon(TileType.TRIGGERED_MINE)));
+        //this.repaint();
+
+        // Show all mines
+        for (RegularTile tile : tiles) {
+            if(tile.GetType() == TileType.TRIGGERED_MINE) { 
+                continue;
+            }
+            else if (tile.GetType() == TileType.UNTRIGGERED_MINE
+                && !tileCovers.get(tiles.indexOf(tile)).IsFlag()) {
+                    // Show mines that were not flagged
+                    int index = tiles.indexOf(tile);
+                    this.remove(tileCovers.get(index));
+                    this.add(icons.get(index));
+                    icons.get(index).setIcon(new ImageIcon(imageHandler.getIcon(TileType.UNTRIGGERED_MINE)));
+            }
+            else if (tile.GetType() != TileType.UNTRIGGERED_MINE 
+                && tileCovers.get(tiles.indexOf(tile)).IsFlag()) {
+                    // Show flagged mines as well
+                    int index = tiles.indexOf(tile);
+                    System.out.println("Flagged mine: " + index);
+                    this.remove(tileCovers.get(index));
+                    this.add(icons.get(index));
+                    icons.get(index).setIcon(new ImageIcon(imageHandler.getIcon(TileType.MINE_ERROR)));
+            }
+            
+        }
+
         System.out.println("You lost");
     }
 
@@ -124,15 +156,18 @@ public class BoardPanel extends JPanel implements ActionListener, MouseListener 
                     else if(tileCovers.get((x+i-1)*board.GetSize()
                         .getColumns()+(y+j-1)).IsFlag())
                             continue;
-                    else if(tiles.get((x+i-1)*board.GetSize()
-                        .getColumns()+(y+j-1)).GetType() != 
-                        TileType.UNTRIGGERED_MINE
-                        && !tileCovers.get((x+i-1)*board.GetSize()
+                    else if(!tileCovers.get((x+i-1)*board.GetSize()
                         .getColumns()+(y+j-1)).IsFlag() ){
                             this.remove(tileCovers.get((x+i-1)*board
                                 .GetSize().getColumns()+(y+j-1)));
                             this.add(icons.get((x+i-1)*board.GetSize()
                                 .getColumns()+(y+j-1)));
+                            
+                            if(tiles.get((x+i-1)*board.GetSize()
+                                .getColumns()+(y+j-1)).GetType() == 
+                                TileType.UNTRIGGERED_MINE) 
+                                    MineClicked((x+i-1)*board.GetSize()
+                                        .getColumns()+(y+j-1));
                     }
                 }
             }
@@ -163,15 +198,17 @@ public class BoardPanel extends JPanel implements ActionListener, MouseListener 
                             x+i-1>board.GetSize().getColumns()-1 || 
                             y+j-1>board.GetSize().getRows()-1)
                                 continue;
-                        else if(tiles.get((x+i-1)*board.GetSize()
-                            .getColumns()+(y+j-1)).GetType() != 
-                            TileType.UNTRIGGERED_MINE
-                            && !tileCovers.get((x+i-1)*board.GetSize()
+                        else if(!tileCovers.get((x+i-1)*board.GetSize()
                             .getColumns()+(y+j-1)).IsFlag() ){
                                 this.remove(tileCovers.get((x+i-1)*board
                                     .GetSize().getColumns()+(y+j-1)));
                                 this.add(icons.get((x+i-1)*board.GetSize()
                                     .getColumns()+(y+j-1)));
+                                if(tiles.get((x+i-1)*board.GetSize()
+                                .getColumns()+(y+j-1)).GetType() == 
+                                TileType.UNTRIGGERED_MINE) 
+                                    MineClicked((x+i-1)*board.GetSize()
+                                    .getColumns()+(y+j-1));
                         }
                     }
                 }
@@ -211,7 +248,7 @@ public class BoardPanel extends JPanel implements ActionListener, MouseListener 
                                 board.MoveMine(index);
                                 GenerateIcons();
                             }
-                            else MineClicked(); 
+                            else MineClicked(index); 
                             break;
                         case EMPTY_TILE:
                             ShowNeighbors(index);
@@ -287,7 +324,6 @@ public class BoardPanel extends JPanel implements ActionListener, MouseListener 
 
 
 /*
- * TODO: Displaying all mines when fail
- * TODO: Inform when win
+ * TODO: Clean up code
  * TODO: Finish interface
  */
