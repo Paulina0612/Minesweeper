@@ -30,7 +30,7 @@ public class BoardPanel extends JPanel implements ActionListener, MouseListener 
     private JLabel[] minesCounter = new JLabel[3];
     private JLabel[] timer = new JLabel[3];
     private Thread timerThread = null;
-    private int time=0;
+    private int time=0, flagsCounter=0;
     
     public BoardPanel(){
         this.setLayout(null);
@@ -84,6 +84,8 @@ public class BoardPanel extends JPanel implements ActionListener, MouseListener 
 
         DrawBoard(boardSize);
 
+        flagsCounter = 0; 
+        UpdateMinesCounter(board.GetSize().getAmountOfMines());
         time=0;
         UpdateTimer(time);
         timerThread = new Thread(() -> {
@@ -110,6 +112,18 @@ public class BoardPanel extends JPanel implements ActionListener, MouseListener 
             timer[i].setIcon(new ImageIcon(
                 imageHandler.getIcon(imageHandler.getNumberType(
                     String.valueOf(timeString.charAt(i))))));
+        }
+    }
+
+    public void UpdateMinesCounter(int mines){
+        String minesString = String.valueOf(mines);
+        if(minesString.length() == 1) minesString = "00" + minesString;
+        else if(minesString.length() == 2) minesString = "0" + minesString;
+        
+        for(int i=0; i<3; i++){
+            minesCounter[i].setIcon(new ImageIcon(
+                imageHandler.getIcon(imageHandler.getNumberType(
+                    String.valueOf(minesString.charAt(i))))));
         }
     }
 
@@ -307,9 +321,8 @@ public class BoardPanel extends JPanel implements ActionListener, MouseListener 
                 if(!tileCovers.get(index).IsFlag()){
                     // First click
                     clicksCounter++;
-                    if(clicksCounter==1) {
+                    if(clicksCounter==1 && !timerThread.isAlive())
                         timerThread.start();
-                    }
                     
                     // Action 
                     switch (tiles.get(index).GetType()) {
@@ -368,16 +381,22 @@ public class BoardPanel extends JPanel implements ActionListener, MouseListener 
             
             if(!tileCovers.get(index).IsFlag()){
                 tileCovers.get(index).PutFlag();
-                tileCovers.get(index).setIcon(new ImageIcon(imageHandler.getIcon(TileType.FLAG)));;
+                tileCovers.get(index).setIcon(new ImageIcon(imageHandler.getIcon(TileType.FLAG)));
+                flagsCounter++;
+                UpdateMinesCounter(board.GetSize().getAmountOfMines()-flagsCounter);
+                clicksCounter++;
+                if(clicksCounter==1 && !timerThread.isAlive()){ 
+                    timerThread.start();
             }
             else{
                 tileCovers.get(index).RemoveFlag();
-                tileCovers.get(index).setIcon(new ImageIcon(imageHandler.getIcon(TileType.COVERED_TILE)));;
-            
+                tileCovers.get(index).setIcon(new ImageIcon(imageHandler.getIcon(TileType.COVERED_TILE)));
+                flagsCounter--;
+                UpdateMinesCounter(board.GetSize().getAmountOfMines()-flagsCounter);
             }
             
             this.repaint();
-        }
+        }}
     }
 
     @Override
@@ -397,5 +416,4 @@ public class BoardPanel extends JPanel implements ActionListener, MouseListener 
 
 /*
  * TODO: Clean up code
- * TODO: Finish interface
  */
