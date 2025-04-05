@@ -11,14 +11,15 @@ import javax.swing.border.Border;
 public class Menu extends JPanel {
     private JButton[] sizes = new JButton[3];
     private JLabel label;
-    private int x = 20;
-    private int y = 20;
-    private int componentHeight = 30;
-    private int componentWidth = 100;
+    private int x = 25;
+    private int y = 15;
+    private int yOffset = 100;
+    private int componentHeight = 25;
+    private int componentWidth = 80;
 
     public Menu(){
-        this.setSize(Frame.MENU_WIDTH, Frame.MENU_HEIGHT);
-        this.setLocation(0,0);
+        this.setSize(Frame.MENU_WIDTH-5, Frame.MENU_HEIGHT-48);
+        this.setLocation(5,5);
         this.setLayout(null);
         this.setForeground(Color.BLACK);
         this.setBackground(Color.LIGHT_GRAY);
@@ -36,7 +37,7 @@ public class Menu extends JPanel {
                 BorderFactory.createLineBorder(Color.darkGray, 1);
 
         for(int i=0; i<sizes.length; i++){
-            sizes[i].setBounds(x, (i+1)*(y*2)+10, componentWidth, componentHeight);
+            sizes[i].setBounds(x, yOffset+(i+1)*(y*2)+10, componentWidth, componentHeight);
             sizes[i].setBackground(Color.GRAY);
             sizes[i].setBorder(border);
             this.add(sizes[i]);
@@ -45,7 +46,7 @@ public class Menu extends JPanel {
 
     private void createLabel(){
         label = new JLabel("Choose size");
-        label.setBounds(x+10,y, componentWidth,componentHeight);
+        label.setBounds(x+5, yOffset+y, componentWidth,componentHeight);
         this.add(label);
     }
 

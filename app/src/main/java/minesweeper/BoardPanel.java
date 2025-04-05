@@ -14,6 +14,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
+import minesweeper.images.FaceType;
 import minesweeper.images.ImageHandler;
 
 public class BoardPanel extends JPanel implements ActionListener, MouseListener {
@@ -25,13 +26,20 @@ public class BoardPanel extends JPanel implements ActionListener, MouseListener 
     private int xOffset, yOffset;
     private boolean ifGameOn;
     private int clicksCounter=0;
+    private FaceButton smileButton = new FaceButton(FaceType.SMILE);
     
     public BoardPanel(){
         this.setLayout(null);
-        this.setSize(Frame.PANEL_WIDTH, Frame.PANEL_HEIGHT);
+        this.setSize(Frame.PANEL_WIDTH-25, Frame.PANEL_HEIGHT-48);
         this.setLayout(null);
-        this.setBackground(Color.LIGHT_GRAY);
-        this.setLocation(new Point(Frame.MENU_WIDTH, 0));
+        this.setBackground(new Color(192,192,192));
+        this.setLocation(new Point(Frame.MENU_WIDTH+5, 5));
+
+        smileButton.setBounds(
+            ((Frame.PANEL_WIDTH-imageHandler.getFaceSide())/2) -13, 
+            15, imageHandler.getFaceSide(), imageHandler.getFaceSide());
+        smileButton.setIcon(new ImageIcon(imageHandler.getIcon(TileType.SMILE)));
+        this.add(smileButton);
     }
 
     public void GenerateBoard(BoardSize boardSize){
@@ -40,8 +48,10 @@ public class BoardPanel extends JPanel implements ActionListener, MouseListener 
         ifGameOn = true;
         clicksCounter = 0;
 
-        xOffset=(Frame.PANEL_WIDTH-boardSize.getColumns()*imageHandler.getTileSide())/2;
-        yOffset=100;
+        xOffset=((Frame.PANEL_WIDTH-boardSize.getColumns()*imageHandler.getTileSide())/2) -13;
+        if(boardSize == BoardSize.SMALL) yOffset=160;
+        else if(boardSize == BoardSize.MEDIUM) yOffset=110;
+        else if(boardSize == BoardSize.LARGE) yOffset=55;
 
         DrawBoard(boardSize);
 
@@ -51,6 +61,7 @@ public class BoardPanel extends JPanel implements ActionListener, MouseListener 
 
     private void DrawBoard(BoardSize boardSize){
         this.removeAll();
+        this.add(smileButton);
         tileCovers.clear();
         GenerateIcons();
 
