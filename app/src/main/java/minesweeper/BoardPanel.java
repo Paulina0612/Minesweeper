@@ -23,14 +23,11 @@ public class BoardPanel extends JPanel implements ActionListener, MouseListener 
     private List<JLabel> icons = new ArrayList<>();
     private List<TileCover> tileCovers = new ArrayList<>();
     private ImageHandler imageHandler = new ImageHandler();
-    private int xOffset, yOffset;
+    private int xOffset, yOffset, time=0, flagsCounter=0, clicksCounter=0;
     private boolean ifGameOn;
-    private int clicksCounter=0;
     private FaceButton smileButton = new FaceButton(FaceType.SMILE);
-    private JLabel[] minesCounter = new JLabel[3];
-    private JLabel[] timer = new JLabel[3];
+    private JLabel[] minesCounter = new JLabel[3], timer = new JLabel[3];
     private Thread timerThread = null;
-    private int time=0, flagsCounter=0;
     
     public BoardPanel(){
         this.setLayout(null);
@@ -39,6 +36,16 @@ public class BoardPanel extends JPanel implements ActionListener, MouseListener 
         this.setBackground(new Color(192,192,192));
         this.setLocation(new Point(Frame.MENU_WIDTH+5, 5));
 
+        SmileButtonGeneration();
+        CountersGeneration();
+        
+        for(int i=0; i<3; i++){
+            this.add(minesCounter[i]);
+            this.add(timer[i]);
+        }
+    }
+
+    private void SmileButtonGeneration(){
         smileButton.setBounds(
             ((Frame.PANEL_WIDTH-imageHandler.getFaceSide())/2) -13, 
             15, imageHandler.getFaceSide(), imageHandler.getFaceSide());
@@ -46,7 +53,9 @@ public class BoardPanel extends JPanel implements ActionListener, MouseListener 
             imageHandler.getIcon(TileType.SMILE)));
         smileButton.addActionListener(this);
         this.add(smileButton);
+    }
 
+    private void CountersGeneration(){
         for(int i=0; i<3; i++){
             timer[i] = new JLabel();
             timer[i].setIcon(new ImageIcon(
@@ -62,31 +71,29 @@ public class BoardPanel extends JPanel implements ActionListener, MouseListener 
         minesCounter[1].setBounds(10+imageHandler.getNumberedIconWidth(), 15, imageHandler.getNumberedIconWidth(), imageHandler.getNumberedIconHeight());
         minesCounter[2].setBounds(10+imageHandler.getNumberedIconWidth()*2, 15, imageHandler.getNumberedIconWidth(), imageHandler.getNumberedIconHeight());
         
-        for(int i=0; i<3; i++){
-            this.add(minesCounter[i]);
-            this.add(timer[i]);
-        }
     }
 
     public void GenerateBoard(BoardSize boardSize){
+        // New game
         this.board = new Board(boardSize);
-
         smileButton.setIcon(new ImageIcon(
             imageHandler.getIcon(TileType.SMILE)));
 
+        // Reset variables
         ifGameOn = true;
         clicksCounter = 0;
-
+        flagsCounter = 0; 
+        time=0;
         xOffset=((Frame.PANEL_WIDTH-boardSize.getColumns()*imageHandler.getTileSide())/2) -13;
         if(boardSize == BoardSize.SMALL) yOffset=160;
         else if(boardSize == BoardSize.MEDIUM) yOffset=110;
         else if(boardSize == BoardSize.LARGE) yOffset=55;
 
+        // Draw board
         DrawBoard(boardSize);
 
-        flagsCounter = 0; 
+        // Set timer and mines counter
         UpdateMinesCounter(board.GetSize().getAmountOfMines());
-        time=0;
         UpdateTimer(time);
         timerThread = new Thread(() -> {
             while (ifGameOn) {
@@ -99,11 +106,10 @@ public class BoardPanel extends JPanel implements ActionListener, MouseListener 
             }
         });
 
-        this.revalidate(); // Layout updated
         this.repaint(); 
     }
 
-    public void UpdateTimer(int time){
+    private void UpdateTimer(int time){
         String timeString = String.valueOf(time);
         if(timeString.length() == 1) timeString = "00" + timeString;
         else if(timeString.length() == 2) timeString = "0" + timeString;
@@ -115,7 +121,7 @@ public class BoardPanel extends JPanel implements ActionListener, MouseListener 
         }
     }
 
-    public void UpdateMinesCounter(int mines){
+    private void UpdateMinesCounter(int mines){
         String minesString = String.valueOf(mines);
         if(minesString.length() == 1) minesString = "00" + minesString;
         else if(minesString.length() == 2) minesString = "0" + minesString;
@@ -128,6 +134,7 @@ public class BoardPanel extends JPanel implements ActionListener, MouseListener 
     }
 
     private void DrawBoard(BoardSize boardSize){
+        // Remove all components from the panel
         this.removeAll();
         this.add(smileButton);
         for(int i=0; i<3; i++){
@@ -135,8 +142,9 @@ public class BoardPanel extends JPanel implements ActionListener, MouseListener 
             this.add(timer[i]);
         }
         tileCovers.clear();
-        GenerateIcons();
 
+        // Generate tiles and icons
+        GenerateIcons();
         ImageIcon icon = new ImageIcon(imageHandler.getIcon(TileType.COVERED_TILE));
         for(int i=0; i<boardSize.getColumns(); i++){
             for(int j=0; j<boardSize.getRows(); j++){
@@ -178,8 +186,7 @@ public class BoardPanel extends JPanel implements ActionListener, MouseListener 
                     this.remove(tileCovers.get(index));
                     this.add(icons.get(index));
                     icons.get(index).setIcon(new ImageIcon(imageHandler.getIcon(TileType.MINE_ERROR)));
-            }
-            
+            } 
         }
 
         smileButton.setIcon(new ImageIcon(imageHandler.getIcon(TileType.SAD_FACE)));
@@ -190,12 +197,11 @@ public class BoardPanel extends JPanel implements ActionListener, MouseListener 
         int index = -1;
 
         // Find the index of the clicked Component
-        for (int i = 0; i < components.size(); i++) {
+        for (int i = 0; i < components.size(); i++) 
             if (components.get(i) == source) {
                 index = i;
                 break;
             }
-        }
 
         return index;
     }
@@ -411,9 +417,3 @@ public class BoardPanel extends JPanel implements ActionListener, MouseListener 
     @Override
     public void mouseExited(MouseEvent e) {}
 }
-
-
-
-/*
- * TODO: Clean up code
- */
