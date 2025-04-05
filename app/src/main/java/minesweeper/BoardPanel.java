@@ -38,7 +38,9 @@ public class BoardPanel extends JPanel implements ActionListener, MouseListener 
         smileButton.setBounds(
             ((Frame.PANEL_WIDTH-imageHandler.getFaceSide())/2) -13, 
             15, imageHandler.getFaceSide(), imageHandler.getFaceSide());
-        smileButton.setIcon(new ImageIcon(imageHandler.getIcon(TileType.SMILE)));
+        smileButton.setIcon(new ImageIcon(
+            imageHandler.getIcon(TileType.SMILE)));
+        smileButton.addActionListener(this);
         this.add(smileButton);
     }
 
@@ -104,7 +106,6 @@ public class BoardPanel extends JPanel implements ActionListener, MouseListener 
                 && tileCovers.get(tiles.indexOf(tile)).IsFlag()) {
                     // Show flagged mines as well
                     int index = tiles.indexOf(tile);
-                    System.out.println("Flagged mine: " + index);
                     this.remove(tileCovers.get(index));
                     this.add(icons.get(index));
                     icons.get(index).setIcon(new ImageIcon(imageHandler.getIcon(TileType.MINE_ERROR)));
@@ -112,7 +113,7 @@ public class BoardPanel extends JPanel implements ActionListener, MouseListener 
             
         }
 
-        System.out.println("You lost");
+        smileButton.setIcon(new ImageIcon(imageHandler.getIcon(TileType.SAD_FACE)));
     }
 
     private int GetIndexOfComponent(List<?> components,Object source){
@@ -234,7 +235,7 @@ public class BoardPanel extends JPanel implements ActionListener, MouseListener 
         // Check if all mines are detected
         if(GetAmountOfTileCovers() == board.GetSize().getAmountOfMines()){
             ifGameOn = false;
-            System.out.println("You won!");
+            smileButton.setIcon(new ImageIcon(imageHandler.getIcon(TileType.SUNGLASSES_FACE)));
         }
     }
 
@@ -274,6 +275,9 @@ public class BoardPanel extends JPanel implements ActionListener, MouseListener 
                     CheckIfWin();
                 }
             }
+        }
+        else if(source == smileButton){
+            GenerateBoard(board.GetSize());
         }
     }
 
