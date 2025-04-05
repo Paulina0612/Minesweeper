@@ -27,6 +27,10 @@ public class BoardPanel extends JPanel implements ActionListener, MouseListener 
     private boolean ifGameOn;
     private int clicksCounter=0;
     private FaceButton smileButton = new FaceButton(FaceType.SMILE);
+    private JLabel[] minesCounter = new JLabel[3];
+    private JLabel[] timer = new JLabel[3];
+    private Thread timerThread = null;
+    private int time=0;
     
     public BoardPanel(){
         this.setLayout(null);
@@ -42,10 +46,33 @@ public class BoardPanel extends JPanel implements ActionListener, MouseListener 
             imageHandler.getIcon(TileType.SMILE)));
         smileButton.addActionListener(this);
         this.add(smileButton);
+
+        for(int i=0; i<3; i++){
+            timer[i] = new JLabel();
+            timer[i].setIcon(new ImageIcon(
+                imageHandler.getIcon(TileType.NUMBER_0)));
+            minesCounter[i] = new JLabel();
+            minesCounter[i].setIcon(new ImageIcon(
+                imageHandler.getIcon(TileType.NUMBER_0)));
+        }
+        timer[0].setBounds(360, 15, imageHandler.getNumberedIconWidth(), imageHandler.getNumberedIconHeight());
+        timer[1].setBounds(360+imageHandler.getNumberedIconWidth(), 15, imageHandler.getNumberedIconWidth(), imageHandler.getNumberedIconHeight());
+        timer[2].setBounds(360+imageHandler.getNumberedIconWidth()*2, 15, imageHandler.getNumberedIconWidth(), imageHandler.getNumberedIconHeight());
+        minesCounter[0].setBounds(10, 15, imageHandler.getNumberedIconWidth(), imageHandler.getNumberedIconHeight());
+        minesCounter[1].setBounds(10+imageHandler.getNumberedIconWidth(), 15, imageHandler.getNumberedIconWidth(), imageHandler.getNumberedIconHeight());
+        minesCounter[2].setBounds(10+imageHandler.getNumberedIconWidth()*2, 15, imageHandler.getNumberedIconWidth(), imageHandler.getNumberedIconHeight());
+        
+        for(int i=0; i<3; i++){
+            this.add(minesCounter[i]);
+            this.add(timer[i]);
+        }
     }
 
     public void GenerateBoard(BoardSize boardSize){
         this.board = new Board(boardSize);
+
+        smileButton.setIcon(new ImageIcon(
+            imageHandler.getIcon(TileType.SMILE)));
 
         ifGameOn = true;
         clicksCounter = 0;
@@ -57,13 +84,42 @@ public class BoardPanel extends JPanel implements ActionListener, MouseListener 
 
         DrawBoard(boardSize);
 
+        time=0;
+        UpdateTimer(time);
+        timerThread = new Thread(() -> {
+            while (ifGameOn) {
+                try {
+                    Thread.sleep(1000);
+                    time++;
+                    if(time < 1000)
+                        UpdateTimer(time);
+                } catch (InterruptedException e) {break;}
+            }
+        });
+
         this.revalidate(); // Layout updated
         this.repaint(); 
+    }
+
+    public void UpdateTimer(int time){
+        String timeString = String.valueOf(time);
+        if(timeString.length() == 1) timeString = "00" + timeString;
+        else if(timeString.length() == 2) timeString = "0" + timeString;
+        
+        for(int i=0; i<3; i++){
+            timer[i].setIcon(new ImageIcon(
+                imageHandler.getIcon(imageHandler.getNumberType(
+                    String.valueOf(timeString.charAt(i))))));
+        }
     }
 
     private void DrawBoard(BoardSize boardSize){
         this.removeAll();
         this.add(smileButton);
+        for(int i=0; i<3; i++){
+            this.add(minesCounter[i]);
+            this.add(timer[i]);
+        }
         tileCovers.clear();
         GenerateIcons();
 
@@ -87,7 +143,6 @@ public class BoardPanel extends JPanel implements ActionListener, MouseListener 
         this.add(icons.get(mineIndex));
         tiles.get(mineIndex).SetType(TileType.TRIGGERED_MINE);
         icons.get(mineIndex).setIcon(new ImageIcon(imageHandler.getIcon(TileType.TRIGGERED_MINE)));
-        //this.repaint();
 
         // Show all mines
         for (RegularTile tile : tiles) {
@@ -114,6 +169,7 @@ public class BoardPanel extends JPanel implements ActionListener, MouseListener 
         }
 
         smileButton.setIcon(new ImageIcon(imageHandler.getIcon(TileType.SAD_FACE)));
+        timerThread.interrupt();
     }
 
     private int GetIndexOfComponent(List<?> components,Object source){
@@ -230,12 +286,11 @@ public class BoardPanel extends JPanel implements ActionListener, MouseListener 
     }
 
     private void CheckIfWin(){
-        System.out.println(GetAmountOfTileCovers() +" "+ board.GetSize().getAmountOfMines());
-
         // Check if all mines are detected
         if(GetAmountOfTileCovers() == board.GetSize().getAmountOfMines()){
             ifGameOn = false;
             smileButton.setIcon(new ImageIcon(imageHandler.getIcon(TileType.SUNGLASSES_FACE)));
+            timerThread.interrupt();
         }
     }
 
@@ -252,6 +307,9 @@ public class BoardPanel extends JPanel implements ActionListener, MouseListener 
                 if(!tileCovers.get(index).IsFlag()){
                     // First click
                     clicksCounter++;
+                    if(clicksCounter==1) {
+                        timerThread.start();
+                    }
                     
                     // Action 
                     switch (tiles.get(index).GetType()) {
@@ -297,8 +355,7 @@ public class BoardPanel extends JPanel implements ActionListener, MouseListener 
 
         if (icons.contains(source)){
             int index = GetIndexOfComponent(icons, source);
-
-            //System.out.println(index);
+            
             if(tiles.get(index).GetType() != TileType.UNTRIGGERED_MINE){
                 ShowNeighbors(index);
             }
@@ -308,7 +365,7 @@ public class BoardPanel extends JPanel implements ActionListener, MouseListener 
         }
         else if(tileCovers.contains(source) && SwingUtilities.isRightMouseButton(e)){
             int index = GetIndexOfComponent(tileCovers, source);
-            //System.out.println(index);
+            
             if(!tileCovers.get(index).IsFlag()){
                 tileCovers.get(index).PutFlag();
                 tileCovers.get(index).setIcon(new ImageIcon(imageHandler.getIcon(TileType.FLAG)));;

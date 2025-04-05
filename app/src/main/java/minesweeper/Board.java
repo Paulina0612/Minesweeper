@@ -25,8 +25,6 @@ public class Board {
             }
         }
         GenerateBoard();
-        DisplayCoveredMap();
-        DisplayMap();
     }
 
     private void GenerateBoard(){
@@ -38,8 +36,6 @@ public class Board {
                 tiles[y][x] = TileType.UNTRIGGERED_MINE;
             else i--;
         }
-        
-        DisplayMap();
 
         for(int i=0; i<size.getRows(); i++){
             for(int j=0; j<size.getColumns(); j++){
@@ -86,7 +82,7 @@ public class Board {
                 break;
             }
         }
-        //System.out.println(x+" "+y);
+        
         return new Position(x, y);
     }
 
@@ -112,49 +108,6 @@ public class Board {
                 PutTileNumber(j, i);
             }
         }
-        System.out.println(minePosition.x+" "+minePosition.y);
-
-        DisplayMap();
-    }
-
-    //TODO: do usunieicia
-    private void DisplayCoveredMap(){
-        for(int i=0; i<size.getRows(); i++){
-            for(int j=0; j<size.getColumns(); j++){
-                int num;
-                if(coverBoard[i][j]) num=1; else num=0;
-                System.out.print("[" + num + "]");
-            }
-            System.out.println();
-        }
-        System.out.println();
-    }
-
-    //TODO: do usunieicia
-    private void DisplayMap(){
-        for(int i=0; i<size.getRows(); i++){
-            for(int j=0; j<size.getColumns(); j++){
-                char num=' ';
-                if(tiles[i][j]==TileType.FLAG) num='f';
-                else if (tiles[i][j]==TileType.EMPTY_TILE) num=' ';
-                else if (tiles[i][j]==TileType.MINE_ERROR) num='e';
-                else if (tiles[i][j]==TileType.TILE_1) num='1';
-                else if (tiles[i][j]==TileType.TILE_2) num='2';
-                else if (tiles[i][j]==TileType.TILE_3) num='3';
-                else if (tiles[i][j]==TileType.TILE_4) num='4';
-                else if (tiles[i][j]==TileType.TILE_5) num='5';
-                else if (tiles[i][j]==TileType.TILE_6) num='6';
-                else if (tiles[i][j]==TileType.TILE_7) num='7';
-                else if (tiles[i][j]==TileType.TILE_8) num='8';
-                else if (tiles[i][j]==TileType.TRIGGERED_MINE) num='M';
-                else if (tiles[i][j]==TileType.UNTRIGGERED_MINE) num='m';
-                
-
-                System.out.print("[" + Character.toString(num) + "]");
-            }
-            System.out.println();
-        }
-        System.out.println();
     }
 
     public BoardSize GetSize(){
